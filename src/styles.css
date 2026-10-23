@@ -87,3 +87,22 @@ button.ghost { border-color: var(--line); color: var(--muted); }
   .sidebar { width: 100%; height: auto; position: static; }
   .grid2 { grid-template-columns: 1fr; }
 }
+
+.cell { margin-top: 0; padding: 7px 9px; font-size: 14px; min-width: 90px; }
+.card .cell { font-size: 20px; font-weight: 700; color: var(--navy); margin-top: 4px; }
+.toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+.toolbar button { margin-right: 0; }
+label.inline { display: flex; align-items: center; gap: 10px; margin: 0; }
+label.inline .cell { width: auto; }
+button.danger { border-color: #f0c4c4; color: var(--red); }
+button.danger:hover { background: #fbe3e3; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.tab { border-radius: 999px; padding: 8px 16px; margin-right: 0; }
+.tab.active { background: var(--gold); border-color: var(--gold); color: var(--navy); font-weight: 600; }
+td .cell { background: #fafbfd; }
+td .cell:focus, .card .cell:focus { outline: 2px solid var(--gold); background: #fff; }
+
+@media print {
+  .tabs, .toolbar { display: none; }
+}

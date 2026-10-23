@@ -6,6 +6,7 @@ import Leave from './pages/Leave.jsx'
 import Payroll from './pages/Payroll.jsx'
 import Fringe from './pages/Fringe.jsx'
 import TimeStudies from './pages/TimeStudies.jsx'
+import Reports from './pages/Reports.jsx'
 import TaxSettings from './pages/TaxSettings.jsx'
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/payroll" element={<Payroll />} />
         <Route path="/fringe" element={<Fringe />} />
         <Route path="/time" element={<TimeStudies />} />
+        <Route path="/reports" element={<Reports />} />
         <Route path="/tax" element={<TaxSettings />} />
       </Routes>
     </Layout>

@@ -7,6 +7,7 @@ const links = [
   { to: '/payroll', label: 'Payroll' },
   { to: '/fringe', label: 'Fringe Benefits' },
   { to: '/time', label: 'Time Studies' },
+  { to: '/reports', label: 'Reports' },
   { to: '/tax', label: 'SARS Tax Settings' }
 ]
 
@@ -25,7 +26,7 @@ export default function Layout({ children }) {
             </NavLink>
           ))}
         </nav>
-        <div className="sidebar-foot">Demo build · mock data</div>
+        <div className="sidebar-foot">Demo build · editable mock data</div>
       </aside>
       <main className="content">{children}</main>
     </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../store.jsx'
+import Cell from '../components/Cell.jsx'
 
 function daysBetween(from, to) {
   const a = new Date(from)
@@ -12,9 +13,17 @@ function daysBetween(from, to) {
   return count
 }
 
+const typeOptions = [
+  { value: 'sick', label: 'Sick' },
+  { value: 'annual', label: 'Annual' },
+  { value: 'family', label: 'Family responsibility' }
+]
+
+const statusOptions = ['Pending', 'Approved', 'Declined'].map(s => ({ value: s, label: s }))
+
 export default function Leave() {
-  const { employees, leave, balances, addLeave, decideLeave } = useStore()
-  const [form, setForm] = useState({ employeeId: 1, type: 'sick', from: '', to: '', note: null })
+  const { employees, leave, balances, allowances, setAllowance, addLeave, updateLeave, deleteLeave } = useStore()
+  const [form, setForm] = useState({ employeeId: employees.length ? employees[0].id : 0, type: 'sick', from: '', to: '', note: null })
 
   const submit = e => {
     e.preventDefault()
@@ -23,13 +32,17 @@ export default function Leave() {
     setForm({ ...form, from: '', to: '', note: null })
   }
 
-  const name = id => employees.find(e => e.id === id).name
-  const bal = balances[Number(form.employeeId)]
+  const empOptions = employees.map(e => ({ value: e.id, label: e.name }))
+  const name = id => {
+    const found = employees.find(e => e.id === id)
+    return found ? found.name : 'Unknown'
+  }
+  const bal = balances[Number(form.employeeId)] || { sick: 0, annual: 0, family: 0 }
 
   return (
     <div>
       <h1>Leave</h1>
-      <p className="sub">Balances deduct automatically when a request is approved</p>
+      <p className="sub">Balances deduct automatically from approved requests. Everything below is editable.</p>
       <div className="grid2">
         <form className="panel" onSubmit={submit}>
           <h2>New request</h2>
@@ -40,9 +53,7 @@ export default function Leave() {
           </label>
           <label>Type
             <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
-              <option value="sick">Sick</option>
-              <option value="annual">Annual</option>
-              <option value="family">Family responsibility</option>
+              {typeOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </label>
           <label>From<input type="date" value={form.from} onChange={e => setForm({ ...form, from: e.target.value })} /></label>
@@ -61,6 +72,12 @@ export default function Leave() {
             <div className="card"><span>Annual days left</span><strong>{bal.annual}</strong></div>
             <div className="card"><span>Family days left</span><strong>{bal.family}</strong></div>
           </div>
+          <h2>Yearly allowance (days)</h2>
+          <div className="cards small">
+            <div className="card"><span>Sick</span><Cell type="number" value={allowances.sick} onChange={v => setAllowance('sick', v)} /></div>
+            <div className="card"><span>Annual</span><Cell type="number" value={allowances.annual} onChange={v => setAllowance('annual', v)} /></div>
+            <div className="card"><span>Family</span><Cell type="number" value={allowances.family} onChange={v => setAllowance('family', v)} /></div>
+          </div>
         </div>
       </div>
       <h2>Requests</h2>
@@ -71,21 +88,14 @@ export default function Leave() {
         <tbody>
           {leave.map(l => (
             <tr key={l.id}>
-              <td>{name(l.employeeId)}</td>
-              <td>{l.type}</td>
-              <td>{l.from}</td>
-              <td>{l.to}</td>
-              <td>{l.days}</td>
-              <td>{l.note || '-'}</td>
-              <td><span className={'tag ' + l.status.toLowerCase()}>{l.status}</span></td>
-              <td>
-                {l.status === 'Pending' && (
-                  <>
-                    <button onClick={() => decideLeave(l.id, 'Approved')}>Approve</button>
-                    <button className="ghost" onClick={() => decideLeave(l.id, 'Declined')}>Decline</button>
-                  </>
-                )}
-              </td>
+              <td><Cell value={l.employeeId} options={empOptions} onChange={v => updateLeave(l.id, { employeeId: Number(v) })} /></td>
+              <td><Cell value={l.type} options={typeOptions} onChange={v => updateLeave(l.id, { type: v })} /></td>
+              <td><Cell type="date" value={l.from} onChange={v => updateLeave(l.id, { from: v })} /></td>
+              <td><Cell type="date" value={l.to} onChange={v => updateLeave(l.id, { to: v })} /></td>
+              <td><Cell type="number" value={l.days} onChange={v => updateLeave(l.id, { days: v })} /></td>
+              <td><Cell value={l.note || ''} onChange={v => updateLeave(l.id, { note: v || null })} /></td>
+              <td><Cell value={l.status} options={statusOptions} onChange={v => updateLeave(l.id, { status: v })} /></td>
+              <td><button className="danger" onClick={() => deleteLeave(l.id)}>Delete</button></td>
             </tr>
           ))}
         </tbody>

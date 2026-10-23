@@ -1,14 +1,20 @@
 import { useStore } from '../store.jsx'
 import { money } from '../tax.js'
+import Cell from '../components/Cell.jsx'
 
 export default function Payroll() {
-  const { payslips, table, payDate } = useStore()
+  const { payslips, table, payDate, setPayDate } = useStore()
   const sum = key => payslips.reduce((s, p) => s + p.slip[key], 0)
 
   return (
     <div>
       <h1>Payroll</h1>
-      <p className="sub">Pay date {payDate} · PAYE calculated automatically from the {table.label}</p>
+      <p className="sub">PAYE calculated automatically from the {table.label}. Edit salaries and allowances on the Employees page.</p>
+      <div className="toolbar">
+        <label className="inline">Pay date
+          <Cell type="date" value={payDate} onChange={setPayDate} />
+        </label>
+      </div>
       <table>
         <thead>
           <tr>
@@ -45,7 +51,7 @@ export default function Payroll() {
           </tr>
         </tfoot>
       </table>
-      <button className="primary" onClick={() => window.print()}>Print payroll report</button>
+      <button className="primary" onClick={() => window.print()}>Print payroll</button>
     </div>
   )
 }
