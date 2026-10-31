@@ -2,17 +2,6 @@ import { useState } from 'react'
 import { useStore } from '../store.jsx'
 import Cell from '../components/Cell.jsx'
 
-function daysBetween(from, to) {
-  const a = new Date(from)
-  const b = new Date(to)
-  let count = 0
-  for (let d = new Date(a); d <= b; d.setDate(d.getDate() + 1)) {
-    const day = d.getDay()
-    if (day !== 0 && day !== 6) count++
-  }
-  return count
-}
-
 const typeOptions = [
   { value: 'sick', label: 'Sick' },
   { value: 'annual', label: 'Annual' },
@@ -28,7 +17,7 @@ export default function Leave() {
   const submit = e => {
     e.preventDefault()
     if (!form.from || !form.to) return
-    addLeave({ ...form, employeeId: Number(form.employeeId), days: daysBetween(form.from, form.to) })
+    addLeave({ ...form, employeeId: Number(form.employeeId) })
     setForm({ ...form, from: '', to: '', note: null })
   }
 

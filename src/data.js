@@ -9,7 +9,7 @@ export const employees = [
 export const leaveAllowances = { sick: 30, annual: 15, family: 3 }
 
 export const initialLeave = [
-  { id: 1, employeeId: 2, type: 'annual', from: '2026-08-10', to: '2026-08-14', days: 5, status: 'Approved', note: null },
+  { id: 1, employeeId: 2, type: 'annual', from: '2026-08-10', to: '2026-08-14', days: 4, status: 'Approved', note: null },
   { id: 2, employeeId: 4, type: 'sick', from: '2026-09-03', to: '2026-09-04', days: 2, status: 'Approved', note: 'sick-note-sipho.pdf' }
 ]
 

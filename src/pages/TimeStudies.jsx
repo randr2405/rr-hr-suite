@@ -6,7 +6,7 @@ const taskOptions = ['Fieldwork', 'Review', 'Reporting', 'Planning'].map(t => ({
 
 export default function TimeStudies() {
   const { time, employees, addTime, updateTime, deleteTime } = useStore()
-  const [form, setForm] = useState({ employeeId: employees.length ? employees[0].id : 0, client: '', task: 'Fieldwork', hours: '', date: '2026-10-22' })
+  const [form, setForm] = useState({ employeeId: employees.length ? employees[0].id : 0, client: '', task: 'Fieldwork', hours: '', date: new Date().toISOString().slice(0, 10) })
   const empOptions = employees.map(e => ({ value: e.id, label: e.name }))
 
   const submit = e => {
@@ -33,7 +33,8 @@ export default function TimeStudies() {
               {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
             </select>
           </label>
-          <label>Client<input value={form.client} onChange={e => setForm({ ...form, client: e.target.value })} /></label>
+          <label>Client<input list="clients" value={form.client} onChange={e => setForm({ ...form, client: e.target.value })} /></label>
+          <datalist id="clients">{Object.keys(byClient).map(c => <option key={c} value={c} />)}</datalist>
           <label>Task
             <select value={form.task} onChange={e => setForm({ ...form, task: e.target.value })}>
               {taskOptions.map(o => <option key={o.value}>{o.label}</option>)}
