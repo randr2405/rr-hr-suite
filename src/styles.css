@@ -153,3 +153,20 @@ tfoot td { font-weight: 600; background: linear-gradient(180deg, #f6efdd, #fbf6e
   body { background: #fff; }
   .card, .panel, table { box-shadow: none; }
 }
+
+/* Login & access */
+.login-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(90% 70% at 15% 0%, #1b3466 0%, transparent 60%), radial-gradient(60% 60% at 100% 100%, rgba(200, 164, 93, .22), transparent 60%), linear-gradient(160deg, var(--navy), var(--ink)); }
+.login-card { width: 100%; max-width: 420px; padding: 40px 38px; border-radius: 22px; background: var(--paper); border: 1px solid rgba(200, 164, 93, .5); box-shadow: 0 40px 80px -20px rgba(0, 0, 0, .6); animation: rise .6s cubic-bezier(.2, .7, .2, 1) both; }
+.login-card .brand-mark { display: inline-block; margin-bottom: 22px; }
+.login-card h1 { font-size: 36px; margin-bottom: 6px; }
+.login-card .sub { margin-bottom: 26px; }
+button.wide { width: 100%; margin: 6px 0 0; padding: 13px; font-size: 15px; }
+.login-err { background: #f8e8e8; color: var(--red); border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; }
+.demo-accts { display: flex; align-items: center; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.demo-accts span { font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-right: auto; }
+.demo-accts button { margin: 0; padding: 7px 12px; font-size: 12.5px; }
+.sidebar-foot { flex-wrap: wrap; }
+.sidebar-foot small { text-transform: capitalize; }
+button.signout { margin: 8px 0 0; width: 100%; background: transparent; color: #cdd5e5; border-color: rgba(200, 164, 93, .3); font-size: 12.5px; }
+button.signout:hover { color: var(--gold-hi); border-color: var(--gold); }

@@ -8,6 +8,7 @@ import {
   initialTaxTables
 } from './data.js'
 import { activeTable, payslip } from './tax.js'
+import { useAuth } from './auth.jsx'
 
 const Store = createContext(null)
 const KEY = 'rr-hr-suite-v2'
@@ -57,6 +58,7 @@ export function StoreProvider({ children }) {
   const [payDate, setPayDate] = useState(() => init('payDate', payDay()))
   const [settings, setSettings] = useState(() => init('settings', { autoApprove: true }))
   const [toast, setToast] = useState(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     try {
@@ -89,10 +91,18 @@ export function StoreProvider({ children }) {
     [employees, fringe, table]
   )
 
+  // Role-based data scoping: employees only ever see their own records.
+  const role = user ? user.role : null
+  const own = user ? user.employeeId : null
+  const mineOnly = role === 'employee'
+  const sEmployees = mineOnly ? employees.filter(e => e.id === own) : employees
+  const sLeave = mineOnly ? leave.filter(l => l.employeeId === own) : leave
+  const sTime = mineOnly ? time.filter(t => t.employeeId === own) : time
+
   const firstId = employees.length ? employees[0].id : 0
 
   const value = {
-    employees, allowances, leave, time, fringe, taxTables, table, balances, payslips, payDate, setPayDate,
+    employees: sEmployees, allowances, leave: sLeave, time: sTime, user, role, fringe, taxTables, table, balances, payslips, payDate, setPayDate,
     settings, setSettings, toast, notify,
     resetDemo: () => { localStorage.removeItem(KEY); window.location.reload() },
     setAllowance: (type, v) => setAllowances(prev => ({ ...prev, [type]: v })),
@@ -109,6 +119,7 @@ export function StoreProvider({ children }) {
     },
     // Smart intake: working days exclude weekends and SA public holidays, then the request is routed automatically.
     addLeave: r => {
+      if (mineOnly) r = { ...r, employeeId: own }
       const days = workingDays(r.from, r.to)
       const left = balances[r.employeeId] ? balances[r.employeeId][r.type] : 0
       const needsNote = r.type === 'sick' && days > 2 && !r.note
@@ -134,7 +145,7 @@ export function StoreProvider({ children }) {
       })),
     decideLeave: (id, status) => { patchList(setLeave, id, { status }); notify(`Request ${status.toLowerCase()}.`) },
     deleteLeave: id => removeFrom(setLeave, id),
-    addTime: entry => { setTime(prev => [...prev, { ...entry, id: nextId(prev) }]); notify('Time captured.') },
+    addTime: entry => { setTime(prev => [...prev, { ...entry, employeeId: mineOnly ? own : entry.employeeId, id: nextId(prev) }]); notify('Time captured.') },
     updateTime: (id, patch) => patchList(setTime, id, patch),
     deleteTime: id => removeFrom(setTime, id),
     addFringe: () => setFringe(prev => [...prev, { id: nextId(prev), employeeId: firstId, benefit: 'New benefit', monthlyValue: 1000, taxable: true }]),

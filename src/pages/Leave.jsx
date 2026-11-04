@@ -11,7 +11,7 @@ const typeOptions = [
 const statusOptions = ['Pending', 'Approved', 'Declined'].map(s => ({ value: s, label: s }))
 
 export default function Leave() {
-  const { employees, leave, balances, allowances, setAllowance, addLeave, updateLeave, deleteLeave } = useStore()
+  const { employees, leave, balances, allowances, setAllowance, addLeave, updateLeave, deleteLeave, role } = useStore()
   const [form, setForm] = useState({ employeeId: employees.length ? employees[0].id : 0, type: 'sick', from: '', to: '', note: null })
 
   const submit = e => {
@@ -63,9 +63,9 @@ export default function Leave() {
           </div>
           <h2>Yearly allowance (days)</h2>
           <div className="cards small">
-            <div className="card"><span>Sick</span><Cell type="number" value={allowances.sick} onChange={v => setAllowance('sick', v)} /></div>
-            <div className="card"><span>Annual</span><Cell type="number" value={allowances.annual} onChange={v => setAllowance('annual', v)} /></div>
-            <div className="card"><span>Family</span><Cell type="number" value={allowances.family} onChange={v => setAllowance('family', v)} /></div>
+            <div className="card"><span>Sick</span>{role === 'admin' ? <Cell type="number" value={allowances.sick} onChange={v => setAllowance('sick', v)} /> : <strong>{allowances.sick}</strong>}</div>
+            <div className="card"><span>Annual</span>{role === 'admin' ? <Cell type="number" value={allowances.annual} onChange={v => setAllowance('annual', v)} /> : <strong>{allowances.annual}</strong>}</div>
+            <div className="card"><span>Family</span>{role === 'admin' ? <Cell type="number" value={allowances.family} onChange={v => setAllowance('family', v)} /> : <strong>{allowances.family}</strong>}</div>
           </div>
         </div>
       </div>
@@ -81,9 +81,9 @@ export default function Leave() {
               <td><Cell value={l.type} options={typeOptions} onChange={v => updateLeave(l.id, { type: v })} /></td>
               <td><Cell type="date" value={l.from} onChange={v => updateLeave(l.id, { from: v })} /></td>
               <td><Cell type="date" value={l.to} onChange={v => updateLeave(l.id, { to: v })} /></td>
-              <td><Cell type="number" value={l.days} onChange={v => updateLeave(l.id, { days: v })} /></td>
+              <td>{role === 'employee' ? l.days : <Cell type="number" value={l.days} onChange={v => updateLeave(l.id, { days: v })} />}</td>
               <td><Cell value={l.note || ''} onChange={v => updateLeave(l.id, { note: v || null })} /></td>
-              <td><Cell value={l.status} options={statusOptions} onChange={v => updateLeave(l.id, { status: v })} /></td>
+              <td>{role === 'employee' ? <span className={'tag ' + l.status.toLowerCase()}>{l.status}</span> : <Cell value={l.status} options={statusOptions} onChange={v => updateLeave(l.id, { status: v })} />}</td>
               <td><button className="danger" onClick={() => deleteLeave(l.id)}>Delete</button></td>
             </tr>
           ))}

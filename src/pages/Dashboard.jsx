@@ -8,7 +8,7 @@ const greet = () => {
 }
 
 export default function Dashboard() {
-  const { employees, leave, time, payslips, table, balances, payDate, settings, setSettings, decideLeave, resetDemo } = useStore()
+  const { employees, leave, time, payslips, table, balances, payDate, settings, setSettings, decideLeave, resetDemo, user } = useStore()
   const sum = k => payslips.reduce((s, p) => s + p.slip[k], 0)
   const name = id => (employees.find(e => e.id === id) || { name: 'Unknown' }).name
   const pending = leave.filter(l => l.status === 'Pending')
@@ -32,7 +32,7 @@ export default function Dashboard() {
       <div className="hero">
         <div>
           <span className="eyebrow">{fmtDate(new Date())}</span>
-          <h1>{greet()}, Thandi</h1>
+          <h1>{greet()}, {user.name.split(' ')[0]}</h1>
           <p>
             {pending.length ? `${pending.length} item${pending.length > 1 ? 's' : ''} need your attention. ` : 'Everything is handled. '}
             Payroll runs on <b>{fmtDate(pd)}</b>{daysToPay >= 0 ? ` (${daysToPay} day${daysToPay === 1 ? '' : 's'} away)` : ' and has been processed'}.
